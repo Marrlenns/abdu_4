@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from posts.models import Post
+from posts.models import Post, Comment
 
 
 # Create your views here.
@@ -19,3 +19,17 @@ def posts_view(request):
         }
 
         return render(request, 'posts/posts.html', context=data)
+
+
+def detail_post_view(request, id):
+    if request.method == 'GET':
+        post = Post.objects.get(id=id)
+        comments = Comment.objects.filter(post_id=id)
+
+        data = {
+            'post': post,
+            'hashtags': post.hashtags.all(),
+            'comments': comments
+        }
+
+        return render(request, 'posts/detail.html', context=data)

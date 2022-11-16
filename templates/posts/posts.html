@@ -18,7 +18,7 @@
                     {% for hashtag in post.hashtags %}
                         <div>{{ hashtag.title }}</div>
                     {% endfor %}
-                    <a href="#" class="btn btn-primary">More</a>
+                    <a href="/posts/{{ post.id }}/" class="btn btn-primary">More</a>
                 </div>
             </div>
         {% endfor %}

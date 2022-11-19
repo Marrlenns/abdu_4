@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 
 class Hashtag(models.Model):
+    icon = models.ImageField(null=True)
     title = models.CharField(max_length=100)
 
     def __str__(self):

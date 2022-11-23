@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from posts.models import Post, Comment, Hashtag
+from posts.forms import PostCreateForm, CommentCreateForm
 
 
 # Create your views here.
@@ -36,10 +37,34 @@ def detail_post_view(request, id):
         data = {
             'post': post,
             'hashtags': post.hashtags.all(),
-            'comments': comments
+            'comments': comments,
+            'form': CommentCreateForm
         }
 
         return render(request, 'posts/detail.html', context=data)
+
+    if request.method == 'POST':
+        form = CommentCreateForm(data=request.POST)
+
+        if form.is_valid():
+            Comment.objects.create(
+                author_id=2,
+                text=form.cleaned_data.get('text'),
+                post_id=id
+            )
+            return redirect(f'/posts/{id}/')
+        else:
+            post = Post.objects.get(id=id)
+            comments = Comment.objects.filter(post_id=id)
+
+            data = {
+                'post': post,
+                'hashtags': post.hashtags.all(),
+                'comments': comments,
+                'form': form
+            }
+
+            return render(request, 'posts/detail.html', context=data)
 
 
 def hashtags_view(request, **kwargs):
@@ -51,3 +76,28 @@ def hashtags_view(request, **kwargs):
         }
 
         return render(request, 'hashtags/hashtags.html', context=data)
+
+
+def post_create_view(request):
+    if request.method == 'GET':
+        data = {
+            'form': PostCreateForm
+        }
+
+        return render(request, 'posts/create.html', context=data)
+
+    if request.method == 'POST':
+        form = PostCreateForm(data=request.POST)
+
+        if form.is_valid():
+            Post.objects.create(
+                author_id=1,
+                title=form.cleaned_data.get('title'),
+                description=form.cleaned_data.get('description')
+            )
+            return redirect('/posts')
+        else:
+            data = {
+                'form': form
+            }
+            return render(request, 'posts/create.html', context=data)

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from posts.models import Post, Comment, Hashtag
 from posts.forms import PostCreateForm, CommentCreateForm
+from users.utils import get_user_from_request
 
 
 # Create your views here.
@@ -23,7 +24,8 @@ def posts_view(request):
         } for post in posts]
 
         data = {
-            'posts': posts
+            'posts': posts,
+            'user': get_user_from_request(request)
         }
 
         return render(request, 'posts/posts.html', context=data)
@@ -38,7 +40,8 @@ def detail_post_view(request, id):
             'post': post,
             'hashtags': post.hashtags.all(),
             'comments': comments,
-            'form': CommentCreateForm
+            'form': CommentCreateForm,
+            'user': get_user_from_request(request)
         }
 
         return render(request, 'posts/detail.html', context=data)
@@ -61,7 +64,8 @@ def detail_post_view(request, id):
                 'post': post,
                 'hashtags': post.hashtags.all(),
                 'comments': comments,
-                'form': form
+                'form': form,
+                'user': get_user_from_request(request)
             }
 
             return render(request, 'posts/detail.html', context=data)
@@ -72,7 +76,8 @@ def hashtags_view(request, **kwargs):
         hashtags = Hashtag.objects.all()
 
         data = {
-            'hashtags': hashtags
+            'hashtags': hashtags,
+            'user': get_user_from_request(request)
         }
 
         return render(request, 'hashtags/hashtags.html', context=data)
@@ -81,7 +86,8 @@ def hashtags_view(request, **kwargs):
 def post_create_view(request):
     if request.method == 'GET':
         data = {
-            'form': PostCreateForm
+            'form': PostCreateForm,
+            'user': get_user_from_request(request)
         }
 
         return render(request, 'posts/create.html', context=data)
@@ -98,6 +104,7 @@ def post_create_view(request):
             return redirect('/posts')
         else:
             data = {
-                'form': form
+                'form': form,
+                'user': get_user_from_request(request)
             }
             return render(request, 'posts/create.html', context=data)

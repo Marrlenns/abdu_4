@@ -6,14 +6,22 @@ from users.utils import get_user_from_request
 
 # Create your views here.
 
+PAGINATION_LIMIT = 4
+
+
 def posts_view(request):
     if request.method == "GET":
         hashtag_id = request.GET.get('hashtag_id')
+        search_text = request.GET.get('search')
+        page = int(request.GET.get('page', 1))
 
         if hashtag_id:
             posts = Post.objects.filter(hashtags__in=[hashtag_id])
         else:
             posts = Post.objects.all()
+
+        if search_text:
+            posts = posts.filter(title__icontains=search_text)
 
         posts = [{
             'id': post.id,
@@ -23,9 +31,14 @@ def posts_view(request):
             'hashtags': post.hashtags.all()
         } for post in posts]
 
+        max_page = round(posts.__len__() / PAGINATION_LIMIT)
+        posts = posts[PAGINATION_LIMIT * (page-1):PAGINATION_LIMIT * page]
+
         data = {
             'posts': posts,
-            'user': get_user_from_request(request)
+            'user': get_user_from_request(request),
+            'hashtag_id': hashtag_id,
+            'max_page': range(1, max_page+1)
         }
 
         return render(request, 'posts/posts.html', context=data)

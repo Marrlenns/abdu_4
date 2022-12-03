@@ -19,12 +19,12 @@
         }
     </style>
     <div class="hashtags">
-        {% for hashtag in hashtags %}
+        {% for hash in hashtags %}
             <div class="hashtag">
-                <img src="/media/{{ hashtag.icon }}" alt="">
+                <img src="/media/{{ hash.icon }}" alt="">
                 <h3>
-                    <a href="/posts/?hashtag_id={{ hashtag.id }}">
-                        {{ hashtag.title }}
+                    <a href="/posts/?hashtag_id={{ hash.id }}">
+                        {{ hash.title }}
                     </a>
                 </h3>
             </div>

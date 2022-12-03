@@ -27,7 +27,7 @@ def posts_view(request):
             'id': post.id,
             'title': post.title,
             'image': post.image,
-            'description': post.description,
+            'description': post.desc,
             'hashtags': post.hashtags.all()
         } for post in posts]
 

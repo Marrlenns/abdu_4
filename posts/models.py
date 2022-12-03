@@ -16,7 +16,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     image = models.ImageField()
     title = models.CharField(max_length=255)
-    description = models.TextField()
+    desc = models.TextField()
     hashtags = models.ManyToManyField(Hashtag)
 
     def __str__(self):
